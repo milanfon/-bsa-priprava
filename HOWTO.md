@@ -11,7 +11,7 @@ apt-get install --no-install-recommends <balíčky>
 
 ## Nastavení SSH klienta a serveru
 
-1. Vytvořit na serveru nový certifikát
+1. Vytvořit na klientovi nový certifikát
 ```sh
 ssh-keygen -t rsa -b 4096 -C "jindra@spos"
 ```
@@ -36,6 +36,7 @@ AllowUsers root # Seznam povolených uživatelů
 PasswordAuthentication no # Autentizace pomocí hesla
 PermitRootLogin without-password # Root se může přihlásit pouze bez hesla
 ```
+7. Restartovat SSH `systemctl restart sshd`
 7. Zkusit přihlášení z klienta
 8. Odšifrovat certifikát na straně klienta
 9. Nainstalovat _fail2ban_
@@ -72,7 +73,7 @@ cryptsetup luksOpen /dev/<vg>/<encrypted> <decrypted>
 - Vytvoří se svazek `/dev/<vg>/<decrypted>`
 7. Vytvoříme file systém 
 ```sh
-mskfs.<fs> /dev/mapper/decrypted
+mkfs.<fs> /dev/mapper/decrypted
 ```
 8. Mounting
 ```sh
