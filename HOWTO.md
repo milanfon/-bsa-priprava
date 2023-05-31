@@ -46,6 +46,8 @@ apt install fail2ban
 
 ## LVM
 
+`lsblk` pro zobrazení disků.
+
 1. Nainstalovat LVM a cryptsetup
 ```
 apt install lvm2 cryptsetup
@@ -64,7 +66,7 @@ lvcreate -L <velikost>GB -n <jméno encryptovaného> <jméno VG>
 ```
 5. Zašifrovat
 ```sh
-cryptsetup -y -v- luksFormat /dev/<vg>/<encrypted>
+cryptsetup -y -v luksFormat /dev/<vg>/<encrypted>
 ```
 6. Odšifrovat do svazku
 ```sh
@@ -78,6 +80,30 @@ mkfs.<fs> /dev/mapper/decrypted
 8. Mounting
 ```sh
 mount /dev/mapper/decrypted /mnt/<mount>
+```
+
+### Keyfile pro dešifrování
+
+1. Zařízení musí být odmountované a zavřeme ho
+```sh
+umount /mnt/<mount>
+cryptsetup luksClose <decrypted>
+```
+2. Vytvoříme random keyfile
+```sh
+dd if=/dev/urandom of=dec.key bs=1M count=1
+```
+3. Přidáme klíč k LV
+```sh
+cryptsetup luksAddKey /dev/data/<encrypted< dec.key
+```
+4. Dešifrujeme pomocí keyfile
+```sh
+cryptsetup luksOpen /dev/data/<encrypted> <decrypted> --key-file dec.key
+```
+5. Můžeme ověřit příkatem 
+```sh
+cryptsetup luksDump /dev/data/<encrypted>
 ```
 
 ## CA 
@@ -218,3 +244,15 @@ tls-auth ta.key 1
 </key>
 ```
 _Potřebuješ na klienta dostat i ten ta.key_
+
+## Syslog
+
+1. Instalace
+```sh
+apt-get install rsyslog
+```
+2. 
+
+---
+
+[Jardovo příprava](https://github.com/leheckaj/kiv-bsa-tahak/blob/main/README.md)
