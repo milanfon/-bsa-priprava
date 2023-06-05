@@ -251,7 +251,12 @@ _Potřebuješ na klienta dostat i ten ta.key_
 ```sh
 apt-get install rsyslog
 ```
-2. 
+2. Do `etc/rsyslog.d/bsa.conf` napsat:
+```sh
+$template errorLogs, "/var/log/errors/%$YEAR%/%$MONTH%/%$DAY%/errors.log"
+# :programname, endswith, "error"  ?errorLogs
+*.error -?errorLogs
+```                     
 
 ---
 
